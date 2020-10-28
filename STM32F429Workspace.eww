@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspace>
     <project>
+        <path>$WS_DIR$\Projects\1_0\1_0.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\Projects\2_0\2_0.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\Projects\2_1\2_1.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\Projects\3_0\3_0.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\Projects\3_1\3_1.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\Projects\4_0\4_0.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\Projects\5_0\5_0.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\Projects\6_1\6_1.ewp</path>
+    </project>
+    <project>
         <path>$WS_DIR$\Projects\Blinky\Blinky.ewp</path>
     </project>
     <project>

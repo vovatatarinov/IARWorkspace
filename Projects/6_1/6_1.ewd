@@ -1119,7 +1119,7 @@
                 <option>
                     <name>CCSTLinkProbeList</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -1132,7 +1132,7 @@
                 <debug>1</debug>
                 <option>
                     <name>CThirdPartyDriverDll</name>
-                    <state>###Uninitialized###</state>
+                    <state>Browse to your third-party driver</state>
                 </option>
                 <option>
                     <name>CThirdPartyLogFileCheck</name>

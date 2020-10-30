@@ -25,6 +25,9 @@
         <path>$WS_DIR$\Projects\6_1\6_1.ewp</path>
     </project>
     <project>
+        <path>$WS_DIR$\Projects\8_0\8_0.ewp</path>
+    </project>
+    <project>
         <path>$WS_DIR$\Projects\Blinky\Blinky.ewp</path>
     </project>
     <project>

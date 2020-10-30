@@ -18,7 +18,7 @@ static short c[8];
 static int var = 0;
 void SPI5_IRQHandler() {
   if (var < 8) {
-    c[var] = LL_SPI_ReceiveData16(SPI5);
+    c[var] = LL_SPI_ReceiveData8(SPI5);
     //delay(10);
     ++var;
     while (LL_SPI_IsActiveFlag_RXNE(SPI5));
@@ -47,17 +47,19 @@ int main(){
     LL_SPI_SetBaudRatePrescaler(SPI5, LL_SPI_BAUDRATEPRESCALER_DIV8);
     LL_SPI_SetTransferBitOrder(SPI5, LL_SPI_MSB_FIRST);
     LL_SPI_SetTransferDirection(SPI5,  LL_SPI_FULL_DUPLEX);
-    LL_SPI_SetDataWidth(SPI5, LL_SPI_DATAWIDTH_16BIT);
+    LL_SPI_SetDataWidth(SPI5, LL_SPI_DATAWIDTH_8BIT);
     LL_SPI_DisableCRC(SPI5);
     LL_SPI_SetNSSMode(SPI5, LL_SPI_NSS_SOFT);
     LL_SPI_EnableIT_RXNE(SPI5);
     LL_SPI_Enable(SPI5);
+    /*
     LL_GPIO_ResetOutputPin(GPIOF, (1 << 6));
     LL_SPI_TransmitData16(SPI5, 0x200F);
         //delay(10);
     LL_SPI_ReceiveData16(SPI5);
     while (LL_SPI_IsActiveFlag_TXE(SPI5));
     LL_GPIO_SetOutputPin(GPIOF, (1 << 6));
+    */
     NVIC_EnableIRQ(SPI5_IRQn);
     /* prepare packet */
     short pack =  0x8F;
@@ -66,9 +68,9 @@ int main(){
     //LL_GPIO_SetOutputPin(GPIOF, (1 << 6));
     while(1) {
         LL_GPIO_ResetOutputPin(GPIOF, (1 << 6));
-        LL_SPI_TransmitData16(SPI5, pack);
-        //delay(10);
+        LL_SPI_TransmitData8(SPI5, pack);
         while (LL_SPI_IsActiveFlag_TXE(SPI5));
+        delay(10);
         LL_GPIO_SetOutputPin(GPIOF, (1 << 6));
         delay(10);
     }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main(int argc, char** argv) {
-    printf("\nConvert TAB symbols to 4 space symbols\nAuthor: Vladimir Tatarinov, 2020\n");
+    printf("\nConvert TAB symbols to 2 space symbols\nAuthor: Vladimir Tatarinov, 2020\n");
     if (argc != 3) {
         printf("Oops! Specify the files please.\nUsage: %s [input] [output]\n", argv[0]);
         return 1;
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     for (long long i = 0; i < size; ++i) {
         char c = getc(in);
         if (c == '\t') {
-            for (int i =0; i < 4; ++i)
+            for (int i =0; i < 2; ++i)
                 fputc(' ', out);
         }
 

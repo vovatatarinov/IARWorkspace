@@ -5,18 +5,11 @@
 
 int var;
 int iamhere = 0;
-void delay(int ms) {
-    for (volatile int i = 0; i < 16000; ++i) {
-      for (volatile int j = 0; j < ms; ++j) {
-        ;
-      }
-    }
-}
 
 void TIM1_UP_TIM10_IRQHandler() {
 	LL_TIM_ClearFlag_UPDATE(TIM1);
 	LL_ADC_REG_StartConversionSWStart(ADC1);
-        iamhere = 1;
+    iamhere = 1;
 }
 
 void ADC_IRQHandler() {

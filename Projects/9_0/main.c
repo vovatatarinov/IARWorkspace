@@ -18,7 +18,7 @@ from 0x08010000 to 0x0801FFFF
 */
 
 /*
-Во флешку будет писаться служебная информация для экономии места
+Во флешку будет писаться служебная информация для экономии ресурса
 
 1-ые 31 байт зарезервированы. Они будут использоваться как подпись.
 При её наличии таблица расположения информации будет считаться действительной.
@@ -76,14 +76,14 @@ word searchPtr() {
   //63520 / 4 = 15880
   int i;
   for (i = 0; i < 15880; ++i) {
-	  int byte = i / 8;
-	  int offset = i % 8;
-	  int ptr = 31 + byte;
-	  int value = (readFlash(ptr) >> offset) & 0x1;
-      if (value == 1)
-		break;
-      if (i == 15879)
-	    return -1; //this is an overflow signal 0xFFFF;
+    int numofnumber = i / 32;
+    int offset = i % 32;
+    int ptr = 16 + numofnumber * 4;
+    int value = (readFlash(ptr) >> offset) & 0x1;
+    if (value == 1)
+      break;
+    if (i == 15879)
+      return -1; //this is an overflow signal 0xFFFF;
   }
   i = i * 4;
   return i;
@@ -109,17 +109,39 @@ void writeData2Flash(dword);
 dword readDataFromFlash();
 
 void clearSector() {
-  
+  //dword data = readDataFromFlash();
+  eraseSector();
+  writeFlash(0, FLASH_SIGN);//write a signature
+  //writeData2Flash(data);
+}
+
+void updateTable(word ptr) {
+  ptr /= 4;
+  int numofnumber  = ptr / 32;
+  int offset = ptr % 32;
+  int value = readFlash(16 + numofnumber * 4);
+  value &= ~(1 << offset);
+  int ptrTable = 16 + numofnumber * 4;
+  //writeFlash(31, 0);
+  writeFlash(ptrTable, value);
 }
 
 void writeData2Flash(dword data) {
-  if (searchPtr() == -1)
-    clearSector(); 
-    
+  if (searchPtr() == 0xFFFF)
+    clearSector();
+  word ptr = searchPtr();
+  updateTable(ptr);
+  ptr += 31 + 1985;
+  writeFlash(ptr, data); 
 }
 
 dword readDataFromFlash() {
-
+  word ptr = searchPtr();
+  if (ptr == 0xFFFF)
+    return readFlash(ptr - 4);
+  ptr -= 4;
+  ptr += 31 + 1985;
+  return readFlash(ptr);
 }
 
 void EXTI0_IRQHandler() {
@@ -127,7 +149,7 @@ void EXTI0_IRQHandler() {
   if (!LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0))
     return;
   ++counter;
-  writeFlash();
+  writeData2Flash(counter);
   return;
 }
 
@@ -170,15 +192,17 @@ int main()
     if (LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0)) {
       eraseMemSignal();
       eraseSector();
-	  writeFlash(0, FLASH_SIGN);//write a signature
+      writeFlash(0, FLASH_SIGN);//write a signature
+      writeData2Flash(0);
      }
   }
-  if (searchPtr() == 0) {
-	  
+  if (!isTableValid()) { 
+    eraseMemSignal();
+    eraseSector();
+    writeFlash(0, FLASH_SIGN);//write a signature
+    writeData2Flash(0);
   }
-  if (counter == -1)
-	counter = 0;
-  writeFlash();
+  counter = readDataFromFlash();
   LL_EXTI_EnableIT_0_31(LL_EXTI_LINE_0);
   LL_EXTI_EnableRisingTrig_0_31(LL_EXTI_LINE_0);
   NVIC_EnableIRQ(EXTI0_IRQn);

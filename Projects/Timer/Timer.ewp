@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.42.1.23869</state>
+                    <state>8.40.1.21529</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -221,6 +221,7 @@
                 <option>
                     <name>CCDefines</name>
                     <state>STM32F429xx</state>
+                    <state>USE_FULL_LL_DRIVER</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -346,6 +347,7 @@
                 <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include</state>
+                    <state>$PROJ_DIR$\..\..\Drivers\STM32F4xx_HAL_Driver\Inc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>

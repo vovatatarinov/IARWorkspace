@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspace>
     <project>
+        <path>$WS_DIR$\Projects\10_0\10_0\EWARM\10_0.ewp</path>
+    </project>
+    <project>
         <path>$WS_DIR$\Projects\1_0\1_0.ewp</path>
     </project>
     <project>

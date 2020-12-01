@@ -45,7 +45,7 @@
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityNormal2,
   .stack_size = 128 * 4
 };
 /* Definitions for PRG1 */
@@ -111,6 +111,26 @@ void StartPRG6(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void suspendAllTasks() {
+  LL_GPIO_ResetOutputPin(GPIOG, LL_GPIO_PIN_13);
+  LL_GPIO_ResetOutputPin(GPIOG, LL_GPIO_PIN_14);
+  vTaskSuspend(PRG1Handle);
+  vTaskSuspend(PRG2Handle);
+  vTaskSuspend(PRG3Handle);
+  vTaskSuspend(PRG4Handle);
+  vTaskSuspend(PRG5Handle);
+  vTaskSuspend(PRG6Handle);
+  
+}
+
+void delay(int counts) {
+    for (volatile int i = 0; i < 16000; ++i) {
+      for (volatile int j = 0; j < counts; ++j) {
+        ;
+      }
+    }
+}
 
 /* USER CODE END 0 */
 
@@ -190,7 +210,7 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
-
+  suspendAllTasks();
   /* Start scheduler */
   osKernelStart();
 
@@ -264,6 +284,12 @@ static void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(GPIOG, LL_GPIO_PIN_13|LL_GPIO_PIN_14);
 
   /**/
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_0;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /**/
   GPIO_InitStruct.Pin = LL_GPIO_PIN_13|LL_GPIO_PIN_14;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
@@ -284,12 +310,52 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
+
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
+  int mode = 0;
+  suspendAllTasks();
   /* Infinite loop */
   for(;;)
   {
+    if (LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0)) {
+      osDelay(100);
+      if (LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0)) {
+        ++mode;
+        if (mode > 4)
+          mode -= 5;
+        suspendAllTasks();
+        switch(mode) {
+          case 0:
+            suspendAllTasks();
+            break;
+          case 1:
+            suspendAllTasks();
+            vTaskResume(PRG1Handle);
+            vTaskResume(PRG2Handle);
+            break;
+          case 2:
+            suspendAllTasks();
+            vTaskResume(PRG3Handle);
+            vTaskResume(PRG4Handle);
+            break;
+          case 3:
+            suspendAllTasks();
+            vTaskResume(PRG1Handle);
+            vTaskResume(PRG5Handle);
+            break;
+          case 4:
+            suspendAllTasks();
+            vTaskResume(PRG3Handle);
+            vTaskResume(PRG6Handle);
+            break;
+          default:
+            suspendAllTasks();
+            break;
+        }
+      }
+    }
     osDelay(1);
   }
   /* USER CODE END 5 */
@@ -308,7 +374,10 @@ void StartPRG1(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    LL_GPIO_ResetOutputPin(GPIOG, LL_GPIO_PIN_13);
+    osDelay(500);
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_13);
+    osDelay(500);
   }
   /* USER CODE END StartPRG1 */
 }
@@ -326,7 +395,10 @@ void StartPRG2(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    LL_GPIO_ResetOutputPin(GPIOG, LL_GPIO_PIN_14);
+    osDelay(1000);
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_14);
+    osDelay(1000);
   }
   /* USER CODE END StartPRG2 */
 }
@@ -344,7 +416,10 @@ void StartPRG3(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    LL_GPIO_ResetOutputPin(GPIOG, LL_GPIO_PIN_13);
+    delay(50);
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_13);
+    delay(50);
   }
   /* USER CODE END StartPRG3 */
 }
@@ -362,7 +437,10 @@ void StartPRG4(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    LL_GPIO_ResetOutputPin(GPIOG, LL_GPIO_PIN_14);
+    delay(100);
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_14);
+    delay(100);
   }
   /* USER CODE END StartPRG4 */
 }
@@ -380,7 +458,10 @@ void StartPRG5(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    LL_GPIO_ResetOutputPin(GPIOG, LL_GPIO_PIN_14);
+    osDelay(1000);
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_14);
+    osDelay(1000);
   }
   /* USER CODE END StartPRG5 */
 }
@@ -398,7 +479,10 @@ void StartPRG6(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    LL_GPIO_ResetOutputPin(GPIOG, LL_GPIO_PIN_14);
+    delay(100);
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_14);
+    delay(100);
   }
   /* USER CODE END StartPRG6 */
 }

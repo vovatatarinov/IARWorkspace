@@ -324,7 +324,7 @@ void StartDefaultTask(void *argument)
       if (LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0)) {
         ++mode;
         if (mode > 4)
-          mode -= 5;
+          mode = 0;
         suspendAllTasks();
         switch(mode) {
           case 0:

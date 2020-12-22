@@ -769,11 +769,11 @@
                 </option>
                 <option>
                     <name>IlinkIcfOverride</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$TOOLKIT_DIR$\config\linker\ST\stm32f429xI.icf</state>
+                    <state>$PROJ_DIR$\pendulum.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -2109,10 +2109,22 @@
         </settings>
     </configuration>
     <file>
+        <name>$PROJ_DIR$\ili9341.c</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\main.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\startup_stm32f429xx.s</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f429i_discovery.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f429i_discovery_lcd.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f429i_discovery_sdram.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\stm32f4xx_hal.c</name>
@@ -2121,10 +2133,37 @@
         <name>$PROJ_DIR$\stm32f4xx_hal_cortex.c</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_dma.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_dma2d.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_gpio.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_ltdc.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_pwr_ex.c</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\stm32f4xx_hal_rcc.c</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_rcc_ex.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_sdram.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_spi.c</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\stm32f4xx_it.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_ll_fmc.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\system_stm32f4xx.c</name>

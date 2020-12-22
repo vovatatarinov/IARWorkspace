@@ -2112,6 +2112,9 @@
         <name>$PROJ_DIR$\ili9341.c</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\l3gd20.c</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\main.c</name>
     </file>
     <file>
@@ -2119,6 +2122,9 @@
     </file>
     <file>
         <name>$PROJ_DIR$\stm32f429i_discovery.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f429i_discovery_gyroscope.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\stm32f429i_discovery_lcd.c</name>

@@ -1,49 +1,90 @@
 #include "stm32f429xx.h"
 #include "main.h"
 #include "stm32f429i_discovery_lcd.h"
+#include "stm32f429i_discovery_gyroscope.h"
 #include "stdio.h"
 
+static float xyz[3];
+static char str[256];
 static void SystemClock_Config(void);
+void halt(void);
+int sgn(float x);
+
 int main()
 {
  //HAL Library initialization
  HAL_Init();
-
  //Appropriate clock configuration
  SystemClock_Config();
 
  //Display initialization
  BSP_LCD_Init();
+ BSP_GYRO_Init();
  BSP_LCD_LayerDefaultInit(LCD_FOREGROUND_LAYER, LCD_FRAME_BUFFER);
  BSP_LCD_SelectLayer(LCD_FOREGROUND_LAYER);
  BSP_LCD_DisplayOn();
-
  BSP_LCD_Clear(LCD_COLOR_WHITE);//Clear display
  BSP_LCD_SetBackColor(LCD_COLOR_WHITE);//Choose background color
  BSP_LCD_SetTextColor(LCD_COLOR_BLACK);//Set work color, not only for text
-
- //Hello MSU
- BSP_LCD_DisplayStringAt(20, 10, "Hello MSU!", LEFT_MODE);
-
- //Draw Russian flag
- BSP_LCD_DrawRect(40, 40, 150, 40);
- BSP_LCD_SetTextColor(LCD_COLOR_BLUE);
- BSP_LCD_FillRect(40, 80, 150, 40);
- BSP_LCD_SetTextColor(LCD_COLOR_RED);
-BSP_LCD_FillRect(40, 120, 150, 40);
-//Write several lines
- BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
- char str[10];
- for(int i = 7; i<12; i++)
- {
- sprintf(str, "Line %d", i);
- BSP_LCD_DisplayStringAtLine(i, str);
+ BSP_LCD_DisplayStringAtLine(1, "Pendulum");
+ int id = BSP_GYRO_ReadID();
+ sprintf(str, "%d", id);
+ BSP_LCD_DisplayStringAtLine(2, "Gyro sensor ID");
+ BSP_LCD_DisplayStringAtLine(3, str);
+ if (id != 212) {
+   BSP_LCD_DisplayStringAtLine(4, "Fail");
+   halt();
  }
-
+ else
+   BSP_LCD_DisplayStringAtLine(4, "OK");
+ //float s = 0;
+ int last_t = 0;
+ int t = 0;
+ float last_z = 0;
+ float per;
  while(1)
  {
+   float x = 0;
+   float y = 0;
+   float z = 0;
+   for (int i = 0; i < 1000; ++i) {
+     BSP_GYRO_GetXYZ(xyz);
+     x += xyz[0] / 1000 / 250;
+     y += xyz[1] / 1000 / 250;
+     z += xyz[2] / 1000 / 250;
+   }
+   BSP_LCD_ClearStringLine(5);
+   BSP_LCD_ClearStringLine(6);
+   BSP_LCD_ClearStringLine(7);
+   BSP_LCD_ClearStringLine(8);
+   BSP_LCD_ClearStringLine(9);
+   sprintf(str, "X: %f", x);
+   BSP_LCD_DisplayStringAtLine(5, str);
+   sprintf(str, "Y: %f", y);
+   BSP_LCD_DisplayStringAtLine(6, str);
+   sprintf(str, "Z: %f", z);
+   BSP_LCD_DisplayStringAtLine(7, str);
+   //sprintf(str, "SUM_Z: %f", s);
+   //BSP_LCD_DisplayStringAtLine(8, str);
+   //last_t = t;
+   t = HAL_GetTick();
+   if (sgn(last_z) * sgn(z) < 0) {
+     int p = t - last_t;
+     last_t = t;
+     per = p / 1000.0;
+     per *= 2;
+   }
+   sprintf(str, "T: %f", per);
+   BSP_LCD_DisplayStringAtLine(8, str);
+   //s += z * ((t - last_t) / 1000.0);
+   last_z = z;
+   float l = (per / 2 / 3.1415926) * (per / 2 / 3.1415926) * 9.8;
+   sprintf(str, "l: %f", l);
+   BSP_LCD_DisplayStringAtLine(9, str);
+   HAL_Delay(10);
+
  }
- return 0;
+ //return 0;
 }
 //Appropriate clock configuration
 static void SystemClock_Config(void)
@@ -81,3 +122,15 @@ RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
 } 
+
+int sgn(float x) {
+  if (x > 0)
+    return 1;
+  if (x < 0)
+    return -1;
+  return 0;
+}
+
+void halt() {
+  while(1);
+}

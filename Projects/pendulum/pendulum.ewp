@@ -222,6 +222,8 @@
                     <name>CCDefines</name>
                     <state>STM32F429xx</state>
                     <state>USE_FULL_LL_DRIVER</state>
+                    <state>USE_STM32F429_DISCO</state>
+                    <state>USE_HAL_DRIVER</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -348,6 +350,7 @@
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include</state>
                     <state>$PROJ_DIR$\..\..\Drivers\STM32F4xx_HAL_Driver\Inc</state>
+                    <state>$PROJ_DIR$\..\..\Drivers\BSP\STM32F429I-Discovery</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2110,6 +2113,18 @@
     </file>
     <file>
         <name>$PROJ_DIR$\startup_stm32f429xx.s</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_cortex.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_hal_rcc.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\stm32f4xx_it.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\system_stm32f4xx.c</name>

@@ -3,6 +3,8 @@
 #include "stm32f429i_discovery_lcd.h"
 #include "stm32f429i_discovery_gyroscope.h"
 #include "stdio.h"
+#include "stm32f4xx_ll_tim.h"
+#include "stm32f4xx_ll_bus.h"
 #include "stm32f4xx_ll_rcc.h"
 
 static float xyz[3];
@@ -11,13 +13,43 @@ static void SystemClock_Config(void);
 void halt(void);
 int sgn(float x);
 
+static int millis = 0;
+
+void TIM1_UP_TIM10_IRQHandler() {
+  LL_TIM_ClearFlag_UPDATE(TIM1);
+  ++millis;  
+}
+
 int main()
 {
- //HAL Library initialization
- HAL_Init();
- //Appropriate clock configuration
+  //Appropriate clock configuration
  SystemClock_Config();
 
+  //SystemCoreClock = 16000000;
+ //HAL Library initialization
+ HAL_Init();
+ /*
+ LL_RCC_ClocksTypeDef RCCClocks;
+ LL_RCC_GetSystemClocksFreq(&RCCClocks);
+ int freq = RCCClocks.HCLK_Frequency;
+ SystemCoreClock = freq;
+ HAL_InitTick(TICK_INT_PRIORITY);
+ */
+ 
+  LL_RCC_ClocksTypeDef RCCClocks;
+  LL_RCC_GetSystemClocksFreq(&RCCClocks);
+  int freq = RCCClocks.PCLK2_Frequency;
+  //SystemCoreClock = freq;
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM1);
+  //auto reload register
+  LL_TIM_SetAutoReload(TIM1, freq / 1000 / 1000 - 1);
+  //Prescaler
+  LL_TIM_SetPrescaler(TIM1, 1000 / 3 * 2);
+  //Enable INT in TIM1
+  LL_TIM_EnableIT_UPDATE(TIM1);
+  LL_TIM_EnableCounter(TIM1);
+  NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);
+  
  //Display initialization
  BSP_LCD_Init();
  BSP_GYRO_Init();
@@ -38,13 +70,7 @@ int main()
  }
  else
    BSP_LCD_DisplayStringAtLine(4, "OK");
- /*
- LL_RCC_ClocksTypeDef RCCClocks;
- LL_RCC_GetSystemClocksFreq(&RCCClocks);
- int freq = RCCClocks.PCLK1_Frequency;
- SystemCoreClock = freq;
- HAL_InitTick(TICK_INT_PRIORITY);
- */
+
  //float s = 0;
  int last_t = 0;
  int t = 0;
@@ -76,7 +102,8 @@ int main()
    //sprintf(str, "SUM_Z: %f", s);
    //BSP_LCD_DisplayStringAtLine(8, str);
    //last_t = t;
-   t = HAL_GetTick();
+   //t = HAL_GetTick();
+   t = millis;
    if (sgn(last_z) * sgn(z) < 0) {
      int p = t - last_t;
      last_t = t;
@@ -90,7 +117,7 @@ int main()
    float l = (per / 2 / 3.1415926) * (per / 2 / 3.1415926) * 9.8;
    sprintf(str, "l: %f", l);
    BSP_LCD_DisplayStringAtLine(9, str);
-   sprintf(str, "freq: %d", freq);
+   sprintf(str, "time: %d", t / 1000);
    BSP_LCD_DisplayStringAtLine(10, str);
    HAL_Delay(10);
 
@@ -120,6 +147,7 @@ static void SystemClock_Config(void)
  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
  RCC_OscInitStruct.PLL.PLLQ = 7;
  HAL_RCC_OscConfig(&RCC_OscInitStruct);
+ 
  /* Activate the Over-Drive mode */
  HAL_PWREx_EnableOverDrive();
 

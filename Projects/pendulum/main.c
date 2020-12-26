@@ -3,6 +3,7 @@
 #include "stm32f429i_discovery_lcd.h"
 #include "stm32f429i_discovery_gyroscope.h"
 #include "stdio.h"
+#include "stm32f4xx_ll_rcc.h"
 
 static float xyz[3];
 static char str[256];
@@ -37,6 +38,13 @@ int main()
  }
  else
    BSP_LCD_DisplayStringAtLine(4, "OK");
+ 
+ LL_RCC_ClocksTypeDef RCCClocks;
+ LL_RCC_GetSystemClocksFreq(&RCCClocks);
+ int freq = RCCClocks.PCLK1_Frequency;
+ SystemCoreClock = freq;
+ HAL_InitTick(TICK_INT_PRIORITY);
+ 
  //float s = 0;
  int last_t = 0;
  int t = 0;
@@ -58,6 +66,7 @@ int main()
    BSP_LCD_ClearStringLine(7);
    BSP_LCD_ClearStringLine(8);
    BSP_LCD_ClearStringLine(9);
+   BSP_LCD_ClearStringLine(10);
    sprintf(str, "X: %f", x);
    BSP_LCD_DisplayStringAtLine(5, str);
    sprintf(str, "Y: %f", y);
@@ -81,6 +90,8 @@ int main()
    float l = (per / 2 / 3.1415926) * (per / 2 / 3.1415926) * 9.8;
    sprintf(str, "l: %f", l);
    BSP_LCD_DisplayStringAtLine(9, str);
+   sprintf(str, "freq: %d", freq);
+   BSP_LCD_DisplayStringAtLine(10, str);
    HAL_Delay(10);
 
  }

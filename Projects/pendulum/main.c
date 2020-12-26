@@ -38,13 +38,13 @@ int main()
  }
  else
    BSP_LCD_DisplayStringAtLine(4, "OK");
- 
+ /*
  LL_RCC_ClocksTypeDef RCCClocks;
  LL_RCC_GetSystemClocksFreq(&RCCClocks);
  int freq = RCCClocks.PCLK1_Frequency;
  SystemCoreClock = freq;
  HAL_InitTick(TICK_INT_PRIORITY);
- 
+ */
  //float s = 0;
  int last_t = 0;
  int t = 0;

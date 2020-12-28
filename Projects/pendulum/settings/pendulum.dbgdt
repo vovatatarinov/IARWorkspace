@@ -876,7 +876,7 @@
                 <expressions>
                     <item>xyz</item>
                     <item>SystemCoreClock</item>
-                    <item></item>
+                    <item />
                 </expressions>
                 <col-names>
                     <item>Expression</item>

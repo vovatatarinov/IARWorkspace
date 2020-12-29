@@ -16,6 +16,7 @@ static void halt(void);
 static inline int sgn(float x);
 static void TIM1_Config();
 static void LCD_Startup();
+static float perarr[10] = {0};
 
 static int millis = 0;
 
@@ -58,8 +59,9 @@ int main()
   //float s = 0;
   int last_t = 0;
   int t = 0;
-  float last_z = 0;
-  float per;  
+  //float last_z = 0;
+  float per;
+  float per_avg;
   while (1)
   {
     float x = 0;
@@ -72,7 +74,9 @@ int main()
       y += xyz.y / 1000 / 250;
       z += xyz.z / 1000 / 250;
     }
-    
+    xyz.x = x;
+    xyz.y = y;
+    xyz.z = z;
     diff = xyz.abs(&xyz) - last_xyz.abs(&last_xyz);
     last_xyz.copy(&last_xyz, &xyz);
     BSP_LCD_ClearStringLine(5);
@@ -98,13 +102,19 @@ int main()
       last_t = t;
       per = p / 1000.0;
       per *= 4;
+      for (int i = 1; i<10; ++i)
+        perarr[i - 1] = perarr[i];
+      perarr[9] = per;
+      per_avg = 0;
+      for (int i = 0; i<10; ++i)
+        per_avg += perarr[i] / 10;
     }
     last_diff = diff;
-    sprintf(str, "T: %f", per);
+    sprintf(str, "T: %f", per_avg);
     BSP_LCD_DisplayStringAtLine(8, str);
     //s += z * ((t - last_t) / 1000.0);
-    last_z = z;
-    float l = (per / 2 / 3.1415926) * (per / 2 / 3.1415926) * 9.8;
+    //last_z = z;
+    float l = (per_avg / 2 / 3.1415926) * (per_avg / 2 / 3.1415926) * 9.8;
     sprintf(str, "l: %f", l);
     BSP_LCD_DisplayStringAtLine(9, str);
     sprintf(str, "time: %d", t / 1000);

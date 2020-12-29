@@ -2171,6 +2171,12 @@
             <name>$PROJ_DIR$\HAL_LL\stm32f4xx_ll_rcc.c</name>
         </file>
     </group>
+    <group>
+        <name>vector3d</name>
+        <file>
+            <name>$PROJ_DIR$\vector3d\vector3d.c</name>
+        </file>
+    </group>
     <file>
         <name>$PROJ_DIR$\main.c</name>
     </file>

@@ -8,7 +8,8 @@
 #include "stm32f4xx_ll_rcc.h"
 #include "vector3d/vector3d.h"
 
-static vector3d xyz;
+static vector3d xyz, last_xyz;
+static float diff, last_diff;
 static char str[256];
 static void SystemClock_Config(void);
 static void halt(void);
@@ -36,6 +37,11 @@ int main()
   LCD_Startup();
   BSP_GYRO_Init();
   vector3dInit(&xyz);
+  vector3dInit(&last_xyz);
+  last_xyz.x = 0;
+  last_xyz.y = 0;
+  last_xyz.z = 0;
+  last_diff = 0;
   BSP_LCD_DisplayStringAtLine(1, "Pendulum");
   int id = BSP_GYRO_ReadID();
   sprintf(str, "%d", id);
@@ -53,7 +59,7 @@ int main()
   int last_t = 0;
   int t = 0;
   float last_z = 0;
-  float per;
+  float per;  
   while (1)
   {
     float x = 0;
@@ -66,6 +72,9 @@ int main()
       y += xyz.y / 1000 / 250;
       z += xyz.z / 1000 / 250;
     }
+    
+    diff = xyz.abs(&xyz) - last_xyz.abs(&last_xyz);
+    last_xyz.copy(&last_xyz, &xyz);
     BSP_LCD_ClearStringLine(5);
     BSP_LCD_ClearStringLine(6);
     BSP_LCD_ClearStringLine(7);
@@ -83,13 +92,14 @@ int main()
     //last_t = t;
     //t = HAL_GetTick();
     t = millis;
-    if (sgn(last_z) * sgn(z) < 0)
+    if (sgn(diff) * sgn(last_diff) < 0)
     {
       int p = t - last_t;
       last_t = t;
       per = p / 1000.0;
-      per *= 2;
+      per *= 4;
     }
+    last_diff = diff;
     sprintf(str, "T: %f", per);
     BSP_LCD_DisplayStringAtLine(8, str);
     //s += z * ((t - last_t) / 1000.0);

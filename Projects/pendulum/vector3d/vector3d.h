@@ -13,6 +13,7 @@ typedef struct vector3d {
     void (*vectormul) (struct vector3d*, struct vector3d*, struct vector3d*);
     void (*mul) (struct vector3d*, struct vector3d*, float);
     void (*div) (struct vector3d*, struct vector3d*, float);
+    void (*copy) (struct vector3d*, struct vector3d*);
 
 } vector3d;
 

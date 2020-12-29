@@ -63,6 +63,12 @@ void vector3ddiv(vector3d* res, vector3d* a, float k) {
     res->z = a->z / k;
 }
 
+void vector3dcopy(vector3d* res, vector3d* src) {
+    res->x = src->x;
+    res->y = src->y;
+    res->z = src->z;
+}
+
 void vector3dInit(vector3d* ptr) {
     ptr->getX = &vector3dGetX;
     ptr->getY = &vector3dGetY;
@@ -76,5 +82,6 @@ void vector3dInit(vector3d* ptr) {
     ptr->scalarmul = &vector3dscalarmul;
     ptr->vectormul = &vector3dvectormul;
     ptr->mul = &vector3dmul;
-    ptr->div = &vector3ddiv;	
+    ptr->div = &vector3ddiv;
+    ptr->copy = &vector3dcopy;	
 }
